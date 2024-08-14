@@ -16,14 +16,14 @@ func (s *LepUserImpl) PermissionList(ctx context.Context, req *lep_user.Permissi
 }
 
 // UpsertPermission implements the LepUserImpl interface.
-func (s *LepUserImpl) UpsertPermission(ctx context.Context, req *lep_user.UpsertMaterialRequest) (resp *lep_user.UpsertPermissionResp, err error) {
-	// TODO: Your code here...
+func (s *LepUserImpl) UpsertPermission(ctx context.Context, req *lep_user.UpsertPermissionRequest) (resp *lep_user.UpsertPermissionResp, err error) {
+	resp, err = handler.UpsertPermission(ctx, req)
 	return
 }
 
 // RoleList implements the LepUserImpl interface.
 func (s *LepUserImpl) RoleList(ctx context.Context, req *lep_user.RoleListRequest) (resp *lep_user.RoleListResp, err error) {
-	// TODO: Your code here...
+	resp, err = handler.RoleList(ctx, req)
 	return
 }
 

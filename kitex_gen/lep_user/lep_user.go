@@ -16,8 +16,8 @@ type Permission struct {
 	PermissionName string `thrift:"permission_name,3" frugal:"3,default,string" json:"permission_name"`
 	PermissionDesc string `thrift:"permission_desc,4" frugal:"4,default,string" json:"permission_desc"`
 	Extra          string `thrift:"extra,5" frugal:"5,default,string" json:"extra"`
-	CreatedTime    string `thrift:"created_time,6" frugal:"6,default,string" json:"created_time"`
-	UpdatedTime    string `thrift:"updated_time,7" frugal:"7,default,string" json:"updated_time"`
+	CreatedTime    int64  `thrift:"created_time,6" frugal:"6,default,i64" json:"created_time"`
+	UpdatedTime    int64  `thrift:"updated_time,7" frugal:"7,default,i64" json:"updated_time"`
 }
 
 func NewPermission() *Permission {
@@ -52,11 +52,11 @@ func (p *Permission) GetExtra() (v string) {
 	return p.Extra
 }
 
-func (p *Permission) GetCreatedTime() (v string) {
+func (p *Permission) GetCreatedTime() (v int64) {
 	return p.CreatedTime
 }
 
-func (p *Permission) GetUpdatedTime() (v string) {
+func (p *Permission) GetUpdatedTime() (v int64) {
 	return p.UpdatedTime
 }
 func (p *Permission) SetId(val *int64) {
@@ -74,10 +74,10 @@ func (p *Permission) SetPermissionDesc(val string) {
 func (p *Permission) SetExtra(val string) {
 	p.Extra = val
 }
-func (p *Permission) SetCreatedTime(val string) {
+func (p *Permission) SetCreatedTime(val int64) {
 	p.CreatedTime = val
 }
-func (p *Permission) SetUpdatedTime(val string) {
+func (p *Permission) SetUpdatedTime(val int64) {
 	p.UpdatedTime = val
 }
 
@@ -155,7 +155,7 @@ func (p *Permission) Read(iprot thrift.TProtocol) (err error) {
 				goto SkipFieldError
 			}
 		case 6:
-			if fieldTypeId == thrift.STRING {
+			if fieldTypeId == thrift.I64 {
 				if err = p.ReadField6(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -163,7 +163,7 @@ func (p *Permission) Read(iprot thrift.TProtocol) (err error) {
 				goto SkipFieldError
 			}
 		case 7:
-			if fieldTypeId == thrift.STRING {
+			if fieldTypeId == thrift.I64 {
 				if err = p.ReadField7(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -256,8 +256,8 @@ func (p *Permission) ReadField5(iprot thrift.TProtocol) error {
 }
 func (p *Permission) ReadField6(iprot thrift.TProtocol) error {
 
-	var _field string
-	if v, err := iprot.ReadString(); err != nil {
+	var _field int64
+	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
 		_field = v
@@ -267,8 +267,8 @@ func (p *Permission) ReadField6(iprot thrift.TProtocol) error {
 }
 func (p *Permission) ReadField7(iprot thrift.TProtocol) error {
 
-	var _field string
-	if v, err := iprot.ReadString(); err != nil {
+	var _field int64
+	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
 		_field = v
@@ -417,10 +417,10 @@ WriteFieldEndError:
 }
 
 func (p *Permission) writeField6(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("created_time", thrift.STRING, 6); err != nil {
+	if err = oprot.WriteFieldBegin("created_time", thrift.I64, 6); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteString(p.CreatedTime); err != nil {
+	if err := oprot.WriteI64(p.CreatedTime); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -434,10 +434,10 @@ WriteFieldEndError:
 }
 
 func (p *Permission) writeField7(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("updated_time", thrift.STRING, 7); err != nil {
+	if err = oprot.WriteFieldBegin("updated_time", thrift.I64, 7); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteString(p.UpdatedTime); err != nil {
+	if err := oprot.WriteI64(p.UpdatedTime); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -528,24 +528,24 @@ func (p *Permission) Field5DeepEqual(src string) bool {
 	}
 	return true
 }
-func (p *Permission) Field6DeepEqual(src string) bool {
+func (p *Permission) Field6DeepEqual(src int64) bool {
 
-	if strings.Compare(p.CreatedTime, src) != 0 {
+	if p.CreatedTime != src {
 		return false
 	}
 	return true
 }
-func (p *Permission) Field7DeepEqual(src string) bool {
+func (p *Permission) Field7DeepEqual(src int64) bool {
 
-	if strings.Compare(p.UpdatedTime, src) != 0 {
+	if p.UpdatedTime != src {
 		return false
 	}
 	return true
 }
 
 type PermissionListRequest struct {
-	Offset         *int64  `thrift:"offset,1,optional" frugal:"1,optional,i64" json:"offset,omitempty"`
-	Limit          *int64  `thrift:"limit,2,optional" frugal:"2,optional,i64" json:"limit,omitempty"`
+	Offset         int64   `thrift:"offset,1,required" frugal:"1,required,i64" json:"offset"`
+	Limit          int64   `thrift:"limit,2,required" frugal:"2,required,i64" json:"limit"`
 	PermissionKey  *string `thrift:"permission_key,3,optional" frugal:"3,optional,string" json:"permission_key,omitempty"`
 	PermissionName *string `thrift:"permission_name,4,optional" frugal:"4,optional,string" json:"permission_name,omitempty"`
 }
@@ -557,22 +557,12 @@ func NewPermissionListRequest() *PermissionListRequest {
 func (p *PermissionListRequest) InitDefault() {
 }
 
-var PermissionListRequest_Offset_DEFAULT int64
-
 func (p *PermissionListRequest) GetOffset() (v int64) {
-	if !p.IsSetOffset() {
-		return PermissionListRequest_Offset_DEFAULT
-	}
-	return *p.Offset
+	return p.Offset
 }
 
-var PermissionListRequest_Limit_DEFAULT int64
-
 func (p *PermissionListRequest) GetLimit() (v int64) {
-	if !p.IsSetLimit() {
-		return PermissionListRequest_Limit_DEFAULT
-	}
-	return *p.Limit
+	return p.Limit
 }
 
 var PermissionListRequest_PermissionKey_DEFAULT string
@@ -592,10 +582,10 @@ func (p *PermissionListRequest) GetPermissionName() (v string) {
 	}
 	return *p.PermissionName
 }
-func (p *PermissionListRequest) SetOffset(val *int64) {
+func (p *PermissionListRequest) SetOffset(val int64) {
 	p.Offset = val
 }
-func (p *PermissionListRequest) SetLimit(val *int64) {
+func (p *PermissionListRequest) SetLimit(val int64) {
 	p.Limit = val
 }
 func (p *PermissionListRequest) SetPermissionKey(val *string) {
@@ -612,14 +602,6 @@ var fieldIDToName_PermissionListRequest = map[int16]string{
 	4: "permission_name",
 }
 
-func (p *PermissionListRequest) IsSetOffset() bool {
-	return p.Offset != nil
-}
-
-func (p *PermissionListRequest) IsSetLimit() bool {
-	return p.Limit != nil
-}
-
 func (p *PermissionListRequest) IsSetPermissionKey() bool {
 	return p.PermissionKey != nil
 }
@@ -632,6 +614,8 @@ func (p *PermissionListRequest) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
+	var issetOffset bool = false
+	var issetLimit bool = false
 
 	if _, err = iprot.ReadStructBegin(); err != nil {
 		goto ReadStructBeginError
@@ -652,6 +636,7 @@ func (p *PermissionListRequest) Read(iprot thrift.TProtocol) (err error) {
 				if err = p.ReadField1(iprot); err != nil {
 					goto ReadFieldError
 				}
+				issetOffset = true
 			} else if err = iprot.Skip(fieldTypeId); err != nil {
 				goto SkipFieldError
 			}
@@ -660,6 +645,7 @@ func (p *PermissionListRequest) Read(iprot thrift.TProtocol) (err error) {
 				if err = p.ReadField2(iprot); err != nil {
 					goto ReadFieldError
 				}
+				issetLimit = true
 			} else if err = iprot.Skip(fieldTypeId); err != nil {
 				goto SkipFieldError
 			}
@@ -692,6 +678,15 @@ func (p *PermissionListRequest) Read(iprot thrift.TProtocol) (err error) {
 		goto ReadStructEndError
 	}
 
+	if !issetOffset {
+		fieldId = 1
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetLimit {
+		fieldId = 2
+		goto RequiredFieldNotSetError
+	}
 	return nil
 ReadStructBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
@@ -706,26 +701,28 @@ ReadFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
 ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+RequiredFieldNotSetError:
+	return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("required field %s is not set", fieldIDToName_PermissionListRequest[fieldId]))
 }
 
 func (p *PermissionListRequest) ReadField1(iprot thrift.TProtocol) error {
 
-	var _field *int64
+	var _field int64
 	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
-		_field = &v
+		_field = v
 	}
 	p.Offset = _field
 	return nil
 }
 func (p *PermissionListRequest) ReadField2(iprot thrift.TProtocol) error {
 
-	var _field *int64
+	var _field int64
 	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
-		_field = &v
+		_field = v
 	}
 	p.Limit = _field
 	return nil
@@ -794,16 +791,14 @@ WriteStructEndError:
 }
 
 func (p *PermissionListRequest) writeField1(oprot thrift.TProtocol) (err error) {
-	if p.IsSetOffset() {
-		if err = oprot.WriteFieldBegin("offset", thrift.I64, 1); err != nil {
-			goto WriteFieldBeginError
-		}
-		if err := oprot.WriteI64(*p.Offset); err != nil {
-			return err
-		}
-		if err = oprot.WriteFieldEnd(); err != nil {
-			goto WriteFieldEndError
-		}
+	if err = oprot.WriteFieldBegin("offset", thrift.I64, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.Offset); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
 	}
 	return nil
 WriteFieldBeginError:
@@ -813,16 +808,14 @@ WriteFieldEndError:
 }
 
 func (p *PermissionListRequest) writeField2(oprot thrift.TProtocol) (err error) {
-	if p.IsSetLimit() {
-		if err = oprot.WriteFieldBegin("limit", thrift.I64, 2); err != nil {
-			goto WriteFieldBeginError
-		}
-		if err := oprot.WriteI64(*p.Limit); err != nil {
-			return err
-		}
-		if err = oprot.WriteFieldEnd(); err != nil {
-			goto WriteFieldEndError
-		}
+	if err = oprot.WriteFieldBegin("limit", thrift.I64, 2); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.Limit); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
 	}
 	return nil
 WriteFieldBeginError:
@@ -898,26 +891,16 @@ func (p *PermissionListRequest) DeepEqual(ano *PermissionListRequest) bool {
 	return true
 }
 
-func (p *PermissionListRequest) Field1DeepEqual(src *int64) bool {
+func (p *PermissionListRequest) Field1DeepEqual(src int64) bool {
 
-	if p.Offset == src {
-		return true
-	} else if p.Offset == nil || src == nil {
-		return false
-	}
-	if *p.Offset != *src {
+	if p.Offset != src {
 		return false
 	}
 	return true
 }
-func (p *PermissionListRequest) Field2DeepEqual(src *int64) bool {
+func (p *PermissionListRequest) Field2DeepEqual(src int64) bool {
 
-	if p.Limit == src {
-		return true
-	} else if p.Limit == nil || src == nil {
-		return false
-	}
-	if *p.Limit != *src {
+	if p.Limit != src {
 		return false
 	}
 	return true
@@ -1730,8 +1713,8 @@ type Role struct {
 	RoleKey        string        `thrift:"role_key,3" frugal:"3,default,string" json:"role_key"`
 	RoleDesc       string        `thrift:"role_desc,4" frugal:"4,default,string" json:"role_desc"`
 	Extra          string        `thrift:"extra,5" frugal:"5,default,string" json:"extra"`
-	CreatedTime    *string       `thrift:"created_time,6,optional" frugal:"6,optional,string" json:"created_time,omitempty"`
-	UpdatedTime    *string       `thrift:"updated_time,7,optional" frugal:"7,optional,string" json:"updated_time,omitempty"`
+	CreatedTime    *int64        `thrift:"created_time,6,optional" frugal:"6,optional,i64" json:"created_time,omitempty"`
+	UpdatedTime    *int64        `thrift:"updated_time,7,optional" frugal:"7,optional,i64" json:"updated_time,omitempty"`
 	PermissionList []*Permission `thrift:"permission_list,8" frugal:"8,default,list<Permission>" json:"permission_list"`
 }
 
@@ -1767,18 +1750,18 @@ func (p *Role) GetExtra() (v string) {
 	return p.Extra
 }
 
-var Role_CreatedTime_DEFAULT string
+var Role_CreatedTime_DEFAULT int64
 
-func (p *Role) GetCreatedTime() (v string) {
+func (p *Role) GetCreatedTime() (v int64) {
 	if !p.IsSetCreatedTime() {
 		return Role_CreatedTime_DEFAULT
 	}
 	return *p.CreatedTime
 }
 
-var Role_UpdatedTime_DEFAULT string
+var Role_UpdatedTime_DEFAULT int64
 
-func (p *Role) GetUpdatedTime() (v string) {
+func (p *Role) GetUpdatedTime() (v int64) {
 	if !p.IsSetUpdatedTime() {
 		return Role_UpdatedTime_DEFAULT
 	}
@@ -1803,10 +1786,10 @@ func (p *Role) SetRoleDesc(val string) {
 func (p *Role) SetExtra(val string) {
 	p.Extra = val
 }
-func (p *Role) SetCreatedTime(val *string) {
+func (p *Role) SetCreatedTime(val *int64) {
 	p.CreatedTime = val
 }
-func (p *Role) SetUpdatedTime(val *string) {
+func (p *Role) SetUpdatedTime(val *int64) {
 	p.UpdatedTime = val
 }
 func (p *Role) SetPermissionList(val []*Permission) {
@@ -1896,7 +1879,7 @@ func (p *Role) Read(iprot thrift.TProtocol) (err error) {
 				goto SkipFieldError
 			}
 		case 6:
-			if fieldTypeId == thrift.STRING {
+			if fieldTypeId == thrift.I64 {
 				if err = p.ReadField6(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -1904,7 +1887,7 @@ func (p *Role) Read(iprot thrift.TProtocol) (err error) {
 				goto SkipFieldError
 			}
 		case 7:
-			if fieldTypeId == thrift.STRING {
+			if fieldTypeId == thrift.I64 {
 				if err = p.ReadField7(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -2005,8 +1988,8 @@ func (p *Role) ReadField5(iprot thrift.TProtocol) error {
 }
 func (p *Role) ReadField6(iprot thrift.TProtocol) error {
 
-	var _field *string
-	if v, err := iprot.ReadString(); err != nil {
+	var _field *int64
+	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
 		_field = &v
@@ -2016,8 +1999,8 @@ func (p *Role) ReadField6(iprot thrift.TProtocol) error {
 }
 func (p *Role) ReadField7(iprot thrift.TProtocol) error {
 
-	var _field *string
-	if v, err := iprot.ReadString(); err != nil {
+	var _field *int64
+	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
 		_field = &v
@@ -2194,10 +2177,10 @@ WriteFieldEndError:
 
 func (p *Role) writeField6(oprot thrift.TProtocol) (err error) {
 	if p.IsSetCreatedTime() {
-		if err = oprot.WriteFieldBegin("created_time", thrift.STRING, 6); err != nil {
+		if err = oprot.WriteFieldBegin("created_time", thrift.I64, 6); err != nil {
 			goto WriteFieldBeginError
 		}
-		if err := oprot.WriteString(*p.CreatedTime); err != nil {
+		if err := oprot.WriteI64(*p.CreatedTime); err != nil {
 			return err
 		}
 		if err = oprot.WriteFieldEnd(); err != nil {
@@ -2213,10 +2196,10 @@ WriteFieldEndError:
 
 func (p *Role) writeField7(oprot thrift.TProtocol) (err error) {
 	if p.IsSetUpdatedTime() {
-		if err = oprot.WriteFieldBegin("updated_time", thrift.STRING, 7); err != nil {
+		if err = oprot.WriteFieldBegin("updated_time", thrift.I64, 7); err != nil {
 			goto WriteFieldBeginError
 		}
-		if err := oprot.WriteString(*p.UpdatedTime); err != nil {
+		if err := oprot.WriteI64(*p.UpdatedTime); err != nil {
 			return err
 		}
 		if err = oprot.WriteFieldEnd(); err != nil {
@@ -2336,26 +2319,26 @@ func (p *Role) Field5DeepEqual(src string) bool {
 	}
 	return true
 }
-func (p *Role) Field6DeepEqual(src *string) bool {
+func (p *Role) Field6DeepEqual(src *int64) bool {
 
 	if p.CreatedTime == src {
 		return true
 	} else if p.CreatedTime == nil || src == nil {
 		return false
 	}
-	if strings.Compare(*p.CreatedTime, *src) != 0 {
+	if *p.CreatedTime != *src {
 		return false
 	}
 	return true
 }
-func (p *Role) Field7DeepEqual(src *string) bool {
+func (p *Role) Field7DeepEqual(src *int64) bool {
 
 	if p.UpdatedTime == src {
 		return true
 	} else if p.UpdatedTime == nil || src == nil {
 		return false
 	}
-	if strings.Compare(*p.UpdatedTime, *src) != 0 {
+	if *p.UpdatedTime != *src {
 		return false
 	}
 	return true
@@ -2375,8 +2358,8 @@ func (p *Role) Field8DeepEqual(src []*Permission) bool {
 }
 
 type RoleListRequest struct {
-	Offset   *int64  `thrift:"offset,1,optional" frugal:"1,optional,i64" json:"offset,omitempty"`
-	Limit    *int64  `thrift:"limit,2,optional" frugal:"2,optional,i64" json:"limit,omitempty"`
+	Offset   int64   `thrift:"offset,1,required" frugal:"1,required,i64" json:"offset"`
+	Limit    int64   `thrift:"limit,2,required" frugal:"2,required,i64" json:"limit"`
 	RoleKey  *string `thrift:"role_key,3,optional" frugal:"3,optional,string" json:"role_key,omitempty"`
 	RoleName *string `thrift:"role_name,4,optional" frugal:"4,optional,string" json:"role_name,omitempty"`
 }
@@ -2388,22 +2371,12 @@ func NewRoleListRequest() *RoleListRequest {
 func (p *RoleListRequest) InitDefault() {
 }
 
-var RoleListRequest_Offset_DEFAULT int64
-
 func (p *RoleListRequest) GetOffset() (v int64) {
-	if !p.IsSetOffset() {
-		return RoleListRequest_Offset_DEFAULT
-	}
-	return *p.Offset
+	return p.Offset
 }
 
-var RoleListRequest_Limit_DEFAULT int64
-
 func (p *RoleListRequest) GetLimit() (v int64) {
-	if !p.IsSetLimit() {
-		return RoleListRequest_Limit_DEFAULT
-	}
-	return *p.Limit
+	return p.Limit
 }
 
 var RoleListRequest_RoleKey_DEFAULT string
@@ -2423,10 +2396,10 @@ func (p *RoleListRequest) GetRoleName() (v string) {
 	}
 	return *p.RoleName
 }
-func (p *RoleListRequest) SetOffset(val *int64) {
+func (p *RoleListRequest) SetOffset(val int64) {
 	p.Offset = val
 }
-func (p *RoleListRequest) SetLimit(val *int64) {
+func (p *RoleListRequest) SetLimit(val int64) {
 	p.Limit = val
 }
 func (p *RoleListRequest) SetRoleKey(val *string) {
@@ -2443,14 +2416,6 @@ var fieldIDToName_RoleListRequest = map[int16]string{
 	4: "role_name",
 }
 
-func (p *RoleListRequest) IsSetOffset() bool {
-	return p.Offset != nil
-}
-
-func (p *RoleListRequest) IsSetLimit() bool {
-	return p.Limit != nil
-}
-
 func (p *RoleListRequest) IsSetRoleKey() bool {
 	return p.RoleKey != nil
 }
@@ -2463,6 +2428,8 @@ func (p *RoleListRequest) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
+	var issetOffset bool = false
+	var issetLimit bool = false
 
 	if _, err = iprot.ReadStructBegin(); err != nil {
 		goto ReadStructBeginError
@@ -2483,6 +2450,7 @@ func (p *RoleListRequest) Read(iprot thrift.TProtocol) (err error) {
 				if err = p.ReadField1(iprot); err != nil {
 					goto ReadFieldError
 				}
+				issetOffset = true
 			} else if err = iprot.Skip(fieldTypeId); err != nil {
 				goto SkipFieldError
 			}
@@ -2491,6 +2459,7 @@ func (p *RoleListRequest) Read(iprot thrift.TProtocol) (err error) {
 				if err = p.ReadField2(iprot); err != nil {
 					goto ReadFieldError
 				}
+				issetLimit = true
 			} else if err = iprot.Skip(fieldTypeId); err != nil {
 				goto SkipFieldError
 			}
@@ -2523,6 +2492,15 @@ func (p *RoleListRequest) Read(iprot thrift.TProtocol) (err error) {
 		goto ReadStructEndError
 	}
 
+	if !issetOffset {
+		fieldId = 1
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetLimit {
+		fieldId = 2
+		goto RequiredFieldNotSetError
+	}
 	return nil
 ReadStructBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
@@ -2537,26 +2515,28 @@ ReadFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
 ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+RequiredFieldNotSetError:
+	return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("required field %s is not set", fieldIDToName_RoleListRequest[fieldId]))
 }
 
 func (p *RoleListRequest) ReadField1(iprot thrift.TProtocol) error {
 
-	var _field *int64
+	var _field int64
 	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
-		_field = &v
+		_field = v
 	}
 	p.Offset = _field
 	return nil
 }
 func (p *RoleListRequest) ReadField2(iprot thrift.TProtocol) error {
 
-	var _field *int64
+	var _field int64
 	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
-		_field = &v
+		_field = v
 	}
 	p.Limit = _field
 	return nil
@@ -2625,16 +2605,14 @@ WriteStructEndError:
 }
 
 func (p *RoleListRequest) writeField1(oprot thrift.TProtocol) (err error) {
-	if p.IsSetOffset() {
-		if err = oprot.WriteFieldBegin("offset", thrift.I64, 1); err != nil {
-			goto WriteFieldBeginError
-		}
-		if err := oprot.WriteI64(*p.Offset); err != nil {
-			return err
-		}
-		if err = oprot.WriteFieldEnd(); err != nil {
-			goto WriteFieldEndError
-		}
+	if err = oprot.WriteFieldBegin("offset", thrift.I64, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.Offset); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
 	}
 	return nil
 WriteFieldBeginError:
@@ -2644,16 +2622,14 @@ WriteFieldEndError:
 }
 
 func (p *RoleListRequest) writeField2(oprot thrift.TProtocol) (err error) {
-	if p.IsSetLimit() {
-		if err = oprot.WriteFieldBegin("limit", thrift.I64, 2); err != nil {
-			goto WriteFieldBeginError
-		}
-		if err := oprot.WriteI64(*p.Limit); err != nil {
-			return err
-		}
-		if err = oprot.WriteFieldEnd(); err != nil {
-			goto WriteFieldEndError
-		}
+	if err = oprot.WriteFieldBegin("limit", thrift.I64, 2); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.Limit); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
 	}
 	return nil
 WriteFieldBeginError:
@@ -2729,26 +2705,16 @@ func (p *RoleListRequest) DeepEqual(ano *RoleListRequest) bool {
 	return true
 }
 
-func (p *RoleListRequest) Field1DeepEqual(src *int64) bool {
+func (p *RoleListRequest) Field1DeepEqual(src int64) bool {
 
-	if p.Offset == src {
-		return true
-	} else if p.Offset == nil || src == nil {
-		return false
-	}
-	if *p.Offset != *src {
+	if p.Offset != src {
 		return false
 	}
 	return true
 }
-func (p *RoleListRequest) Field2DeepEqual(src *int64) bool {
+func (p *RoleListRequest) Field2DeepEqual(src int64) bool {
 
-	if p.Limit == src {
-		return true
-	} else if p.Limit == nil || src == nil {
-		return false
-	}
-	if *p.Limit != *src {
+	if p.Limit != src {
 		return false
 	}
 	return true
@@ -3561,8 +3527,8 @@ type User struct {
 	UserAvatar     string        `thrift:"user_avatar,3" frugal:"3,default,string" json:"user_avatar"`
 	RoleKey        string        `thrift:"role_key,4" frugal:"4,default,string" json:"role_key"`
 	Extra          string        `thrift:"extra,5" frugal:"5,default,string" json:"extra"`
-	CreatedTime    *string       `thrift:"created_time,6,optional" frugal:"6,optional,string" json:"created_time,omitempty"`
-	UpdatedTime    *string       `thrift:"updated_time,7,optional" frugal:"7,optional,string" json:"updated_time,omitempty"`
+	CreatedTime    *int64        `thrift:"created_time,6,optional" frugal:"6,optional,i64" json:"created_time,omitempty"`
+	UpdatedTime    *int64        `thrift:"updated_time,7,optional" frugal:"7,optional,i64" json:"updated_time,omitempty"`
 	PermissionList []*Permission `thrift:"permission_list,8" frugal:"8,default,list<Permission>" json:"permission_list"`
 	Phone          string        `thrift:"phone,9" frugal:"9,default,string" json:"phone"`
 	RoleName       string        `thrift:"role_name,10" frugal:"10,default,string" json:"role_name"`
@@ -3600,18 +3566,18 @@ func (p *User) GetExtra() (v string) {
 	return p.Extra
 }
 
-var User_CreatedTime_DEFAULT string
+var User_CreatedTime_DEFAULT int64
 
-func (p *User) GetCreatedTime() (v string) {
+func (p *User) GetCreatedTime() (v int64) {
 	if !p.IsSetCreatedTime() {
 		return User_CreatedTime_DEFAULT
 	}
 	return *p.CreatedTime
 }
 
-var User_UpdatedTime_DEFAULT string
+var User_UpdatedTime_DEFAULT int64
 
-func (p *User) GetUpdatedTime() (v string) {
+func (p *User) GetUpdatedTime() (v int64) {
 	if !p.IsSetUpdatedTime() {
 		return User_UpdatedTime_DEFAULT
 	}
@@ -3644,10 +3610,10 @@ func (p *User) SetRoleKey(val string) {
 func (p *User) SetExtra(val string) {
 	p.Extra = val
 }
-func (p *User) SetCreatedTime(val *string) {
+func (p *User) SetCreatedTime(val *int64) {
 	p.CreatedTime = val
 }
-func (p *User) SetUpdatedTime(val *string) {
+func (p *User) SetUpdatedTime(val *int64) {
 	p.UpdatedTime = val
 }
 func (p *User) SetPermissionList(val []*Permission) {
@@ -3745,7 +3711,7 @@ func (p *User) Read(iprot thrift.TProtocol) (err error) {
 				goto SkipFieldError
 			}
 		case 6:
-			if fieldTypeId == thrift.STRING {
+			if fieldTypeId == thrift.I64 {
 				if err = p.ReadField6(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -3753,7 +3719,7 @@ func (p *User) Read(iprot thrift.TProtocol) (err error) {
 				goto SkipFieldError
 			}
 		case 7:
-			if fieldTypeId == thrift.STRING {
+			if fieldTypeId == thrift.I64 {
 				if err = p.ReadField7(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -3870,8 +3836,8 @@ func (p *User) ReadField5(iprot thrift.TProtocol) error {
 }
 func (p *User) ReadField6(iprot thrift.TProtocol) error {
 
-	var _field *string
-	if v, err := iprot.ReadString(); err != nil {
+	var _field *int64
+	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
 		_field = &v
@@ -3881,8 +3847,8 @@ func (p *User) ReadField6(iprot thrift.TProtocol) error {
 }
 func (p *User) ReadField7(iprot thrift.TProtocol) error {
 
-	var _field *string
-	if v, err := iprot.ReadString(); err != nil {
+	var _field *int64
+	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
 		_field = &v
@@ -4089,10 +4055,10 @@ WriteFieldEndError:
 
 func (p *User) writeField6(oprot thrift.TProtocol) (err error) {
 	if p.IsSetCreatedTime() {
-		if err = oprot.WriteFieldBegin("created_time", thrift.STRING, 6); err != nil {
+		if err = oprot.WriteFieldBegin("created_time", thrift.I64, 6); err != nil {
 			goto WriteFieldBeginError
 		}
-		if err := oprot.WriteString(*p.CreatedTime); err != nil {
+		if err := oprot.WriteI64(*p.CreatedTime); err != nil {
 			return err
 		}
 		if err = oprot.WriteFieldEnd(); err != nil {
@@ -4108,10 +4074,10 @@ WriteFieldEndError:
 
 func (p *User) writeField7(oprot thrift.TProtocol) (err error) {
 	if p.IsSetUpdatedTime() {
-		if err = oprot.WriteFieldBegin("updated_time", thrift.STRING, 7); err != nil {
+		if err = oprot.WriteFieldBegin("updated_time", thrift.I64, 7); err != nil {
 			goto WriteFieldBeginError
 		}
-		if err := oprot.WriteString(*p.UpdatedTime); err != nil {
+		if err := oprot.WriteI64(*p.UpdatedTime); err != nil {
 			return err
 		}
 		if err = oprot.WriteFieldEnd(); err != nil {
@@ -4271,26 +4237,26 @@ func (p *User) Field5DeepEqual(src string) bool {
 	}
 	return true
 }
-func (p *User) Field6DeepEqual(src *string) bool {
+func (p *User) Field6DeepEqual(src *int64) bool {
 
 	if p.CreatedTime == src {
 		return true
 	} else if p.CreatedTime == nil || src == nil {
 		return false
 	}
-	if strings.Compare(*p.CreatedTime, *src) != 0 {
+	if *p.CreatedTime != *src {
 		return false
 	}
 	return true
 }
-func (p *User) Field7DeepEqual(src *string) bool {
+func (p *User) Field7DeepEqual(src *int64) bool {
 
 	if p.UpdatedTime == src {
 		return true
 	} else if p.UpdatedTime == nil || src == nil {
 		return false
 	}
-	if strings.Compare(*p.UpdatedTime, *src) != 0 {
+	if *p.UpdatedTime != *src {
 		return false
 	}
 	return true
@@ -4324,8 +4290,8 @@ func (p *User) Field10DeepEqual(src string) bool {
 }
 
 type UserListRequest struct {
-	Offset  *int64  `thrift:"offset,1,optional" frugal:"1,optional,i64" json:"offset,omitempty"`
-	Limit   *int64  `thrift:"limit,2,optional" frugal:"2,optional,i64" json:"limit,omitempty"`
+	Offset  int64   `thrift:"offset,1,required" frugal:"1,required,i64" json:"offset"`
+	Limit   int64   `thrift:"limit,2,required" frugal:"2,required,i64" json:"limit"`
 	UserId  *string `thrift:"user_id,3,optional" frugal:"3,optional,string" json:"user_id,omitempty"`
 	RoleKey *string `thrift:"role_key,4,optional" frugal:"4,optional,string" json:"role_key,omitempty"`
 	Phone   *string `thrift:"phone,5,optional" frugal:"5,optional,string" json:"phone,omitempty"`
@@ -4338,22 +4304,12 @@ func NewUserListRequest() *UserListRequest {
 func (p *UserListRequest) InitDefault() {
 }
 
-var UserListRequest_Offset_DEFAULT int64
-
 func (p *UserListRequest) GetOffset() (v int64) {
-	if !p.IsSetOffset() {
-		return UserListRequest_Offset_DEFAULT
-	}
-	return *p.Offset
+	return p.Offset
 }
 
-var UserListRequest_Limit_DEFAULT int64
-
 func (p *UserListRequest) GetLimit() (v int64) {
-	if !p.IsSetLimit() {
-		return UserListRequest_Limit_DEFAULT
-	}
-	return *p.Limit
+	return p.Limit
 }
 
 var UserListRequest_UserId_DEFAULT string
@@ -4382,10 +4338,10 @@ func (p *UserListRequest) GetPhone() (v string) {
 	}
 	return *p.Phone
 }
-func (p *UserListRequest) SetOffset(val *int64) {
+func (p *UserListRequest) SetOffset(val int64) {
 	p.Offset = val
 }
-func (p *UserListRequest) SetLimit(val *int64) {
+func (p *UserListRequest) SetLimit(val int64) {
 	p.Limit = val
 }
 func (p *UserListRequest) SetUserId(val *string) {
@@ -4406,14 +4362,6 @@ var fieldIDToName_UserListRequest = map[int16]string{
 	5: "phone",
 }
 
-func (p *UserListRequest) IsSetOffset() bool {
-	return p.Offset != nil
-}
-
-func (p *UserListRequest) IsSetLimit() bool {
-	return p.Limit != nil
-}
-
 func (p *UserListRequest) IsSetUserId() bool {
 	return p.UserId != nil
 }
@@ -4430,6 +4378,8 @@ func (p *UserListRequest) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
+	var issetOffset bool = false
+	var issetLimit bool = false
 
 	if _, err = iprot.ReadStructBegin(); err != nil {
 		goto ReadStructBeginError
@@ -4450,6 +4400,7 @@ func (p *UserListRequest) Read(iprot thrift.TProtocol) (err error) {
 				if err = p.ReadField1(iprot); err != nil {
 					goto ReadFieldError
 				}
+				issetOffset = true
 			} else if err = iprot.Skip(fieldTypeId); err != nil {
 				goto SkipFieldError
 			}
@@ -4458,6 +4409,7 @@ func (p *UserListRequest) Read(iprot thrift.TProtocol) (err error) {
 				if err = p.ReadField2(iprot); err != nil {
 					goto ReadFieldError
 				}
+				issetLimit = true
 			} else if err = iprot.Skip(fieldTypeId); err != nil {
 				goto SkipFieldError
 			}
@@ -4498,6 +4450,15 @@ func (p *UserListRequest) Read(iprot thrift.TProtocol) (err error) {
 		goto ReadStructEndError
 	}
 
+	if !issetOffset {
+		fieldId = 1
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetLimit {
+		fieldId = 2
+		goto RequiredFieldNotSetError
+	}
 	return nil
 ReadStructBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
@@ -4512,26 +4473,28 @@ ReadFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
 ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+RequiredFieldNotSetError:
+	return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("required field %s is not set", fieldIDToName_UserListRequest[fieldId]))
 }
 
 func (p *UserListRequest) ReadField1(iprot thrift.TProtocol) error {
 
-	var _field *int64
+	var _field int64
 	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
-		_field = &v
+		_field = v
 	}
 	p.Offset = _field
 	return nil
 }
 func (p *UserListRequest) ReadField2(iprot thrift.TProtocol) error {
 
-	var _field *int64
+	var _field int64
 	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
-		_field = &v
+		_field = v
 	}
 	p.Limit = _field
 	return nil
@@ -4615,16 +4578,14 @@ WriteStructEndError:
 }
 
 func (p *UserListRequest) writeField1(oprot thrift.TProtocol) (err error) {
-	if p.IsSetOffset() {
-		if err = oprot.WriteFieldBegin("offset", thrift.I64, 1); err != nil {
-			goto WriteFieldBeginError
-		}
-		if err := oprot.WriteI64(*p.Offset); err != nil {
-			return err
-		}
-		if err = oprot.WriteFieldEnd(); err != nil {
-			goto WriteFieldEndError
-		}
+	if err = oprot.WriteFieldBegin("offset", thrift.I64, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.Offset); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
 	}
 	return nil
 WriteFieldBeginError:
@@ -4634,16 +4595,14 @@ WriteFieldEndError:
 }
 
 func (p *UserListRequest) writeField2(oprot thrift.TProtocol) (err error) {
-	if p.IsSetLimit() {
-		if err = oprot.WriteFieldBegin("limit", thrift.I64, 2); err != nil {
-			goto WriteFieldBeginError
-		}
-		if err := oprot.WriteI64(*p.Limit); err != nil {
-			return err
-		}
-		if err = oprot.WriteFieldEnd(); err != nil {
-			goto WriteFieldEndError
-		}
+	if err = oprot.WriteFieldBegin("limit", thrift.I64, 2); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.Limit); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
 	}
 	return nil
 WriteFieldBeginError:
@@ -4741,26 +4700,16 @@ func (p *UserListRequest) DeepEqual(ano *UserListRequest) bool {
 	return true
 }
 
-func (p *UserListRequest) Field1DeepEqual(src *int64) bool {
+func (p *UserListRequest) Field1DeepEqual(src int64) bool {
 
-	if p.Offset == src {
-		return true
-	} else if p.Offset == nil || src == nil {
-		return false
-	}
-	if *p.Offset != *src {
+	if p.Offset != src {
 		return false
 	}
 	return true
 }
-func (p *UserListRequest) Field2DeepEqual(src *int64) bool {
+func (p *UserListRequest) Field2DeepEqual(src int64) bool {
 
-	if p.Limit == src {
-		return true
-	} else if p.Limit == nil || src == nil {
-		return false
-	}
-	if *p.Limit != *src {
+	if p.Limit != src {
 		return false
 	}
 	return true
@@ -5580,14 +5529,14 @@ func (p *UpsertUserResp) Field255DeepEqual(src *base.BaseResp) bool {
 }
 
 type Material struct {
-	Id            int64   `thrift:"id,1" frugal:"1,default,i64" json:"id"`
-	UserId        int64   `thrift:"user_id,2" frugal:"2,default,i64" json:"user_id"`
-	MaterialType  int64   `thrift:"material_type,3" frugal:"3,default,i64" json:"material_type"`
-	MaterialKey   string  `thrift:"material_key,4" frugal:"4,default,string" json:"material_key"`
-	MaterialValue string  `thrift:"material_value,5" frugal:"5,default,string" json:"material_value"`
-	IsDeleted     int64   `thrift:"is_deleted,6" frugal:"6,default,i64" json:"is_deleted"`
-	CreatedTime   *string `thrift:"created_time,7,optional" frugal:"7,optional,string" json:"created_time,omitempty"`
-	UpdatedTime   *string `thrift:"updated_time,8,optional" frugal:"8,optional,string" json:"updated_time,omitempty"`
+	Id            int64  `thrift:"id,1" frugal:"1,default,i64" json:"id"`
+	UserId        int64  `thrift:"user_id,2" frugal:"2,default,i64" json:"user_id"`
+	MaterialType  int64  `thrift:"material_type,3" frugal:"3,default,i64" json:"material_type"`
+	MaterialKey   string `thrift:"material_key,4" frugal:"4,default,string" json:"material_key"`
+	MaterialValue string `thrift:"material_value,5" frugal:"5,default,string" json:"material_value"`
+	IsDeleted     int64  `thrift:"is_deleted,6" frugal:"6,default,i64" json:"is_deleted"`
+	CreatedTime   *int64 `thrift:"created_time,7,optional" frugal:"7,optional,i64" json:"created_time,omitempty"`
+	UpdatedTime   *int64 `thrift:"updated_time,8,optional" frugal:"8,optional,i64" json:"updated_time,omitempty"`
 }
 
 func NewMaterial() *Material {
@@ -5621,18 +5570,18 @@ func (p *Material) GetIsDeleted() (v int64) {
 	return p.IsDeleted
 }
 
-var Material_CreatedTime_DEFAULT string
+var Material_CreatedTime_DEFAULT int64
 
-func (p *Material) GetCreatedTime() (v string) {
+func (p *Material) GetCreatedTime() (v int64) {
 	if !p.IsSetCreatedTime() {
 		return Material_CreatedTime_DEFAULT
 	}
 	return *p.CreatedTime
 }
 
-var Material_UpdatedTime_DEFAULT string
+var Material_UpdatedTime_DEFAULT int64
 
-func (p *Material) GetUpdatedTime() (v string) {
+func (p *Material) GetUpdatedTime() (v int64) {
 	if !p.IsSetUpdatedTime() {
 		return Material_UpdatedTime_DEFAULT
 	}
@@ -5656,10 +5605,10 @@ func (p *Material) SetMaterialValue(val string) {
 func (p *Material) SetIsDeleted(val int64) {
 	p.IsDeleted = val
 }
-func (p *Material) SetCreatedTime(val *string) {
+func (p *Material) SetCreatedTime(val *int64) {
 	p.CreatedTime = val
 }
-func (p *Material) SetUpdatedTime(val *string) {
+func (p *Material) SetUpdatedTime(val *int64) {
 	p.UpdatedTime = val
 }
 
@@ -5750,7 +5699,7 @@ func (p *Material) Read(iprot thrift.TProtocol) (err error) {
 				goto SkipFieldError
 			}
 		case 7:
-			if fieldTypeId == thrift.STRING {
+			if fieldTypeId == thrift.I64 {
 				if err = p.ReadField7(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -5758,7 +5707,7 @@ func (p *Material) Read(iprot thrift.TProtocol) (err error) {
 				goto SkipFieldError
 			}
 		case 8:
-			if fieldTypeId == thrift.STRING {
+			if fieldTypeId == thrift.I64 {
 				if err = p.ReadField8(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -5862,8 +5811,8 @@ func (p *Material) ReadField6(iprot thrift.TProtocol) error {
 }
 func (p *Material) ReadField7(iprot thrift.TProtocol) error {
 
-	var _field *string
-	if v, err := iprot.ReadString(); err != nil {
+	var _field *int64
+	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
 		_field = &v
@@ -5873,8 +5822,8 @@ func (p *Material) ReadField7(iprot thrift.TProtocol) error {
 }
 func (p *Material) ReadField8(iprot thrift.TProtocol) error {
 
-	var _field *string
-	if v, err := iprot.ReadString(); err != nil {
+	var _field *int64
+	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
 		_field = &v
@@ -6043,10 +5992,10 @@ WriteFieldEndError:
 
 func (p *Material) writeField7(oprot thrift.TProtocol) (err error) {
 	if p.IsSetCreatedTime() {
-		if err = oprot.WriteFieldBegin("created_time", thrift.STRING, 7); err != nil {
+		if err = oprot.WriteFieldBegin("created_time", thrift.I64, 7); err != nil {
 			goto WriteFieldBeginError
 		}
-		if err := oprot.WriteString(*p.CreatedTime); err != nil {
+		if err := oprot.WriteI64(*p.CreatedTime); err != nil {
 			return err
 		}
 		if err = oprot.WriteFieldEnd(); err != nil {
@@ -6062,10 +6011,10 @@ WriteFieldEndError:
 
 func (p *Material) writeField8(oprot thrift.TProtocol) (err error) {
 	if p.IsSetUpdatedTime() {
-		if err = oprot.WriteFieldBegin("updated_time", thrift.STRING, 8); err != nil {
+		if err = oprot.WriteFieldBegin("updated_time", thrift.I64, 8); err != nil {
 			goto WriteFieldBeginError
 		}
-		if err := oprot.WriteString(*p.UpdatedTime); err != nil {
+		if err := oprot.WriteI64(*p.UpdatedTime); err != nil {
 			return err
 		}
 		if err = oprot.WriteFieldEnd(); err != nil {
@@ -6162,34 +6111,34 @@ func (p *Material) Field6DeepEqual(src int64) bool {
 	}
 	return true
 }
-func (p *Material) Field7DeepEqual(src *string) bool {
+func (p *Material) Field7DeepEqual(src *int64) bool {
 
 	if p.CreatedTime == src {
 		return true
 	} else if p.CreatedTime == nil || src == nil {
 		return false
 	}
-	if strings.Compare(*p.CreatedTime, *src) != 0 {
+	if *p.CreatedTime != *src {
 		return false
 	}
 	return true
 }
-func (p *Material) Field8DeepEqual(src *string) bool {
+func (p *Material) Field8DeepEqual(src *int64) bool {
 
 	if p.UpdatedTime == src {
 		return true
 	} else if p.UpdatedTime == nil || src == nil {
 		return false
 	}
-	if strings.Compare(*p.UpdatedTime, *src) != 0 {
+	if *p.UpdatedTime != *src {
 		return false
 	}
 	return true
 }
 
 type MaterialListRequest struct {
-	Offset       *int64  `thrift:"offset,1,optional" frugal:"1,optional,i64" json:"offset,omitempty"`
-	Limit        *int64  `thrift:"limit,2,optional" frugal:"2,optional,i64" json:"limit,omitempty"`
+	Offset       int64   `thrift:"offset,1,required" frugal:"1,required,i64" json:"offset"`
+	Limit        int64   `thrift:"limit,2,required" frugal:"2,required,i64" json:"limit"`
 	MaterialType *int64  `thrift:"material_type,3,optional" frugal:"3,optional,i64" json:"material_type,omitempty"`
 	MaterialKey  *string `thrift:"material_key,4,optional" frugal:"4,optional,string" json:"material_key,omitempty"`
 	UserId       *int64  `thrift:"user_id,6,optional" frugal:"6,optional,i64" json:"user_id,omitempty"`
@@ -6202,22 +6151,12 @@ func NewMaterialListRequest() *MaterialListRequest {
 func (p *MaterialListRequest) InitDefault() {
 }
 
-var MaterialListRequest_Offset_DEFAULT int64
-
 func (p *MaterialListRequest) GetOffset() (v int64) {
-	if !p.IsSetOffset() {
-		return MaterialListRequest_Offset_DEFAULT
-	}
-	return *p.Offset
+	return p.Offset
 }
 
-var MaterialListRequest_Limit_DEFAULT int64
-
 func (p *MaterialListRequest) GetLimit() (v int64) {
-	if !p.IsSetLimit() {
-		return MaterialListRequest_Limit_DEFAULT
-	}
-	return *p.Limit
+	return p.Limit
 }
 
 var MaterialListRequest_MaterialType_DEFAULT int64
@@ -6246,10 +6185,10 @@ func (p *MaterialListRequest) GetUserId() (v int64) {
 	}
 	return *p.UserId
 }
-func (p *MaterialListRequest) SetOffset(val *int64) {
+func (p *MaterialListRequest) SetOffset(val int64) {
 	p.Offset = val
 }
-func (p *MaterialListRequest) SetLimit(val *int64) {
+func (p *MaterialListRequest) SetLimit(val int64) {
 	p.Limit = val
 }
 func (p *MaterialListRequest) SetMaterialType(val *int64) {
@@ -6270,14 +6209,6 @@ var fieldIDToName_MaterialListRequest = map[int16]string{
 	6: "user_id",
 }
 
-func (p *MaterialListRequest) IsSetOffset() bool {
-	return p.Offset != nil
-}
-
-func (p *MaterialListRequest) IsSetLimit() bool {
-	return p.Limit != nil
-}
-
 func (p *MaterialListRequest) IsSetMaterialType() bool {
 	return p.MaterialType != nil
 }
@@ -6294,6 +6225,8 @@ func (p *MaterialListRequest) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
+	var issetOffset bool = false
+	var issetLimit bool = false
 
 	if _, err = iprot.ReadStructBegin(); err != nil {
 		goto ReadStructBeginError
@@ -6314,6 +6247,7 @@ func (p *MaterialListRequest) Read(iprot thrift.TProtocol) (err error) {
 				if err = p.ReadField1(iprot); err != nil {
 					goto ReadFieldError
 				}
+				issetOffset = true
 			} else if err = iprot.Skip(fieldTypeId); err != nil {
 				goto SkipFieldError
 			}
@@ -6322,6 +6256,7 @@ func (p *MaterialListRequest) Read(iprot thrift.TProtocol) (err error) {
 				if err = p.ReadField2(iprot); err != nil {
 					goto ReadFieldError
 				}
+				issetLimit = true
 			} else if err = iprot.Skip(fieldTypeId); err != nil {
 				goto SkipFieldError
 			}
@@ -6362,6 +6297,15 @@ func (p *MaterialListRequest) Read(iprot thrift.TProtocol) (err error) {
 		goto ReadStructEndError
 	}
 
+	if !issetOffset {
+		fieldId = 1
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetLimit {
+		fieldId = 2
+		goto RequiredFieldNotSetError
+	}
 	return nil
 ReadStructBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
@@ -6376,26 +6320,28 @@ ReadFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
 ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+RequiredFieldNotSetError:
+	return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("required field %s is not set", fieldIDToName_MaterialListRequest[fieldId]))
 }
 
 func (p *MaterialListRequest) ReadField1(iprot thrift.TProtocol) error {
 
-	var _field *int64
+	var _field int64
 	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
-		_field = &v
+		_field = v
 	}
 	p.Offset = _field
 	return nil
 }
 func (p *MaterialListRequest) ReadField2(iprot thrift.TProtocol) error {
 
-	var _field *int64
+	var _field int64
 	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
-		_field = &v
+		_field = v
 	}
 	p.Limit = _field
 	return nil
@@ -6479,16 +6425,14 @@ WriteStructEndError:
 }
 
 func (p *MaterialListRequest) writeField1(oprot thrift.TProtocol) (err error) {
-	if p.IsSetOffset() {
-		if err = oprot.WriteFieldBegin("offset", thrift.I64, 1); err != nil {
-			goto WriteFieldBeginError
-		}
-		if err := oprot.WriteI64(*p.Offset); err != nil {
-			return err
-		}
-		if err = oprot.WriteFieldEnd(); err != nil {
-			goto WriteFieldEndError
-		}
+	if err = oprot.WriteFieldBegin("offset", thrift.I64, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.Offset); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
 	}
 	return nil
 WriteFieldBeginError:
@@ -6498,16 +6442,14 @@ WriteFieldEndError:
 }
 
 func (p *MaterialListRequest) writeField2(oprot thrift.TProtocol) (err error) {
-	if p.IsSetLimit() {
-		if err = oprot.WriteFieldBegin("limit", thrift.I64, 2); err != nil {
-			goto WriteFieldBeginError
-		}
-		if err := oprot.WriteI64(*p.Limit); err != nil {
-			return err
-		}
-		if err = oprot.WriteFieldEnd(); err != nil {
-			goto WriteFieldEndError
-		}
+	if err = oprot.WriteFieldBegin("limit", thrift.I64, 2); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.Limit); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
 	}
 	return nil
 WriteFieldBeginError:
@@ -6605,26 +6547,16 @@ func (p *MaterialListRequest) DeepEqual(ano *MaterialListRequest) bool {
 	return true
 }
 
-func (p *MaterialListRequest) Field1DeepEqual(src *int64) bool {
+func (p *MaterialListRequest) Field1DeepEqual(src int64) bool {
 
-	if p.Offset == src {
-		return true
-	} else if p.Offset == nil || src == nil {
-		return false
-	}
-	if *p.Offset != *src {
+	if p.Offset != src {
 		return false
 	}
 	return true
 }
-func (p *MaterialListRequest) Field2DeepEqual(src *int64) bool {
+func (p *MaterialListRequest) Field2DeepEqual(src int64) bool {
 
-	if p.Limit == src {
-		return true
-	} else if p.Limit == nil || src == nil {
-		return false
-	}
-	if *p.Limit != *src {
+	if p.Limit != src {
 		return false
 	}
 	return true
