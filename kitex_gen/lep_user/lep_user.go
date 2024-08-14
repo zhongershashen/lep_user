@@ -548,7 +548,6 @@ type PermissionListRequest struct {
 	Limit          *int64  `thrift:"limit,2,optional" frugal:"2,optional,i64" json:"limit,omitempty"`
 	PermissionKey  *string `thrift:"permission_key,3,optional" frugal:"3,optional,string" json:"permission_key,omitempty"`
 	PermissionName *string `thrift:"permission_name,4,optional" frugal:"4,optional,string" json:"permission_name,omitempty"`
-	RoleKey        *string `thrift:"role_key,5,optional" frugal:"5,optional,string" json:"role_key,omitempty"`
 }
 
 func NewPermissionListRequest() *PermissionListRequest {
@@ -593,15 +592,6 @@ func (p *PermissionListRequest) GetPermissionName() (v string) {
 	}
 	return *p.PermissionName
 }
-
-var PermissionListRequest_RoleKey_DEFAULT string
-
-func (p *PermissionListRequest) GetRoleKey() (v string) {
-	if !p.IsSetRoleKey() {
-		return PermissionListRequest_RoleKey_DEFAULT
-	}
-	return *p.RoleKey
-}
 func (p *PermissionListRequest) SetOffset(val *int64) {
 	p.Offset = val
 }
@@ -614,16 +604,12 @@ func (p *PermissionListRequest) SetPermissionKey(val *string) {
 func (p *PermissionListRequest) SetPermissionName(val *string) {
 	p.PermissionName = val
 }
-func (p *PermissionListRequest) SetRoleKey(val *string) {
-	p.RoleKey = val
-}
 
 var fieldIDToName_PermissionListRequest = map[int16]string{
 	1: "offset",
 	2: "limit",
 	3: "permission_key",
 	4: "permission_name",
-	5: "role_key",
 }
 
 func (p *PermissionListRequest) IsSetOffset() bool {
@@ -640,10 +626,6 @@ func (p *PermissionListRequest) IsSetPermissionKey() bool {
 
 func (p *PermissionListRequest) IsSetPermissionName() bool {
 	return p.PermissionName != nil
-}
-
-func (p *PermissionListRequest) IsSetRoleKey() bool {
-	return p.RoleKey != nil
 }
 
 func (p *PermissionListRequest) Read(iprot thrift.TProtocol) (err error) {
@@ -692,14 +674,6 @@ func (p *PermissionListRequest) Read(iprot thrift.TProtocol) (err error) {
 		case 4:
 			if fieldTypeId == thrift.STRING {
 				if err = p.ReadField4(iprot); err != nil {
-					goto ReadFieldError
-				}
-			} else if err = iprot.Skip(fieldTypeId); err != nil {
-				goto SkipFieldError
-			}
-		case 5:
-			if fieldTypeId == thrift.STRING {
-				if err = p.ReadField5(iprot); err != nil {
 					goto ReadFieldError
 				}
 			} else if err = iprot.Skip(fieldTypeId); err != nil {
@@ -778,17 +752,6 @@ func (p *PermissionListRequest) ReadField4(iprot thrift.TProtocol) error {
 	p.PermissionName = _field
 	return nil
 }
-func (p *PermissionListRequest) ReadField5(iprot thrift.TProtocol) error {
-
-	var _field *string
-	if v, err := iprot.ReadString(); err != nil {
-		return err
-	} else {
-		_field = &v
-	}
-	p.RoleKey = _field
-	return nil
-}
 
 func (p *PermissionListRequest) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
@@ -810,10 +773,6 @@ func (p *PermissionListRequest) Write(oprot thrift.TProtocol) (err error) {
 		}
 		if err = p.writeField4(oprot); err != nil {
 			fieldId = 4
-			goto WriteFieldError
-		}
-		if err = p.writeField5(oprot); err != nil {
-			fieldId = 5
 			goto WriteFieldError
 		}
 	}
@@ -910,25 +869,6 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 4 end error: ", p), err)
 }
 
-func (p *PermissionListRequest) writeField5(oprot thrift.TProtocol) (err error) {
-	if p.IsSetRoleKey() {
-		if err = oprot.WriteFieldBegin("role_key", thrift.STRING, 5); err != nil {
-			goto WriteFieldBeginError
-		}
-		if err := oprot.WriteString(*p.RoleKey); err != nil {
-			return err
-		}
-		if err = oprot.WriteFieldEnd(); err != nil {
-			goto WriteFieldEndError
-		}
-	}
-	return nil
-WriteFieldBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 5 begin error: ", p), err)
-WriteFieldEndError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 5 end error: ", p), err)
-}
-
 func (p *PermissionListRequest) String() string {
 	if p == nil {
 		return "<nil>"
@@ -953,9 +893,6 @@ func (p *PermissionListRequest) DeepEqual(ano *PermissionListRequest) bool {
 		return false
 	}
 	if !p.Field4DeepEqual(ano.PermissionName) {
-		return false
-	}
-	if !p.Field5DeepEqual(ano.RoleKey) {
 		return false
 	}
 	return true
@@ -1005,18 +942,6 @@ func (p *PermissionListRequest) Field4DeepEqual(src *string) bool {
 		return false
 	}
 	if strings.Compare(*p.PermissionName, *src) != 0 {
-		return false
-	}
-	return true
-}
-func (p *PermissionListRequest) Field5DeepEqual(src *string) bool {
-
-	if p.RoleKey == src {
-		return true
-	} else if p.RoleKey == nil || src == nil {
-		return false
-	}
-	if strings.Compare(*p.RoleKey, *src) != 0 {
 		return false
 	}
 	return true

@@ -527,20 +527,6 @@ func (p *PermissionListRequest) FastRead(buf []byte) (int, error) {
 					goto SkipFieldError
 				}
 			}
-		case 5:
-			if fieldTypeId == thrift.STRING {
-				l, err = p.FastReadField5(buf[offset:])
-				offset += l
-				if err != nil {
-					goto ReadFieldError
-				}
-			} else {
-				l, err = bthrift.Binary.Skip(buf[offset:], fieldTypeId)
-				offset += l
-				if err != nil {
-					goto SkipFieldError
-				}
-			}
 		default:
 			l, err = bthrift.Binary.Skip(buf[offset:], fieldTypeId)
 			offset += l
@@ -636,21 +622,6 @@ func (p *PermissionListRequest) FastReadField4(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *PermissionListRequest) FastReadField5(buf []byte) (int, error) {
-	offset := 0
-
-	var _field *string
-	if v, l, err := bthrift.Binary.ReadString(buf[offset:]); err != nil {
-		return offset, err
-	} else {
-		offset += l
-		_field = &v
-
-	}
-	p.RoleKey = _field
-	return offset, nil
-}
-
 // for compatibility
 func (p *PermissionListRequest) FastWrite(buf []byte) int {
 	return 0
@@ -664,7 +635,6 @@ func (p *PermissionListRequest) FastWriteNocopy(buf []byte, binaryWriter bthrift
 		offset += p.fastWriteField2(buf[offset:], binaryWriter)
 		offset += p.fastWriteField3(buf[offset:], binaryWriter)
 		offset += p.fastWriteField4(buf[offset:], binaryWriter)
-		offset += p.fastWriteField5(buf[offset:], binaryWriter)
 	}
 	offset += bthrift.Binary.WriteFieldStop(buf[offset:])
 	offset += bthrift.Binary.WriteStructEnd(buf[offset:])
@@ -679,7 +649,6 @@ func (p *PermissionListRequest) BLength() int {
 		l += p.field2Length()
 		l += p.field3Length()
 		l += p.field4Length()
-		l += p.field5Length()
 	}
 	l += bthrift.Binary.FieldStopLength()
 	l += bthrift.Binary.StructEndLength()
@@ -726,16 +695,6 @@ func (p *PermissionListRequest) fastWriteField4(buf []byte, binaryWriter bthrift
 	return offset
 }
 
-func (p *PermissionListRequest) fastWriteField5(buf []byte, binaryWriter bthrift.BinaryWriter) int {
-	offset := 0
-	if p.IsSetRoleKey() {
-		offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "role_key", thrift.STRING, 5)
-		offset += bthrift.Binary.WriteStringNocopy(buf[offset:], binaryWriter, *p.RoleKey)
-		offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
-	}
-	return offset
-}
-
 func (p *PermissionListRequest) field1Length() int {
 	l := 0
 	if p.IsSetOffset() {
@@ -771,16 +730,6 @@ func (p *PermissionListRequest) field4Length() int {
 	if p.IsSetPermissionName() {
 		l += bthrift.Binary.FieldBeginLength("permission_name", thrift.STRING, 4)
 		l += bthrift.Binary.StringLengthNocopy(*p.PermissionName)
-		l += bthrift.Binary.FieldEndLength()
-	}
-	return l
-}
-
-func (p *PermissionListRequest) field5Length() int {
-	l := 0
-	if p.IsSetRoleKey() {
-		l += bthrift.Binary.FieldBeginLength("role_key", thrift.STRING, 5)
-		l += bthrift.Binary.StringLengthNocopy(*p.RoleKey)
 		l += bthrift.Binary.FieldEndLength()
 	}
 	return l
