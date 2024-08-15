@@ -33,3 +33,13 @@ func UpsertPermission(ctx context.Context, req *lep_user.UpsertPermissionRequest
 	resp.PermissionId = id
 	return resp, err
 }
+func DeletePermission(ctx context.Context, req *lep_user.DeletePermissionRequest) (*lep_user.DeletePermissionResp, error) {
+	resp := new(lep_user.DeletePermissionResp)
+	resp.BaseResp = base.NewBaseResp()
+	handler := permission.NewDeleteHandler(ctx, req)
+	err := handler.Delete()
+	if err != nil {
+		return nil, err
+	}
+	return resp, err
+}

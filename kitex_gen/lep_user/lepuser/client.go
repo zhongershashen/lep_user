@@ -12,13 +12,17 @@ import (
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
 	PermissionList(ctx context.Context, req *lep_user.PermissionListRequest, callOptions ...callopt.Option) (r *lep_user.PermissionListResp, err error)
-	UpsertPermission(ctx context.Context, req *lep_user.UpsertMaterialRequest, callOptions ...callopt.Option) (r *lep_user.UpsertPermissionResp, err error)
+	UpsertPermission(ctx context.Context, req *lep_user.UpsertPermissionRequest, callOptions ...callopt.Option) (r *lep_user.UpsertPermissionResp, err error)
+	DeletePermission(ctx context.Context, req *lep_user.DeletePermissionRequest, callOptions ...callopt.Option) (r *lep_user.DeletePermissionResp, err error)
 	RoleList(ctx context.Context, req *lep_user.RoleListRequest, callOptions ...callopt.Option) (r *lep_user.RoleListResp, err error)
 	UpsertRole(ctx context.Context, req *lep_user.UpsertRoleRequest, callOptions ...callopt.Option) (r *lep_user.UpsertRoleResp, err error)
+	DeleteRole(ctx context.Context, req *lep_user.DeleteRoleRequest, callOptions ...callopt.Option) (r *lep_user.DeleteRoleResp, err error)
 	UserList(ctx context.Context, req *lep_user.UserListRequest, callOptions ...callopt.Option) (r *lep_user.UserListResp, err error)
 	UpsertUser(ctx context.Context, req *lep_user.UpsertUserRequest, callOptions ...callopt.Option) (r *lep_user.UpsertUserResp, err error)
+	DeleteUser(ctx context.Context, req *lep_user.DeleteUserRequest, callOptions ...callopt.Option) (r *lep_user.DeleteUserResp, err error)
 	MaterialList(ctx context.Context, req *lep_user.MaterialListRequest, callOptions ...callopt.Option) (r *lep_user.MaterialListResp, err error)
 	UpsertMaterial(ctx context.Context, req *lep_user.UpsertMaterialRequest, callOptions ...callopt.Option) (r *lep_user.UpsertMaterialResp, err error)
+	DeleteMaterial(ctx context.Context, req *lep_user.DeleteMaterialRequest, callOptions ...callopt.Option) (r *lep_user.DeleteMaterialResp, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -55,9 +59,14 @@ func (p *kLepUserClient) PermissionList(ctx context.Context, req *lep_user.Permi
 	return p.kClient.PermissionList(ctx, req)
 }
 
-func (p *kLepUserClient) UpsertPermission(ctx context.Context, req *lep_user.UpsertMaterialRequest, callOptions ...callopt.Option) (r *lep_user.UpsertPermissionResp, err error) {
+func (p *kLepUserClient) UpsertPermission(ctx context.Context, req *lep_user.UpsertPermissionRequest, callOptions ...callopt.Option) (r *lep_user.UpsertPermissionResp, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.UpsertPermission(ctx, req)
+}
+
+func (p *kLepUserClient) DeletePermission(ctx context.Context, req *lep_user.DeletePermissionRequest, callOptions ...callopt.Option) (r *lep_user.DeletePermissionResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.DeletePermission(ctx, req)
 }
 
 func (p *kLepUserClient) RoleList(ctx context.Context, req *lep_user.RoleListRequest, callOptions ...callopt.Option) (r *lep_user.RoleListResp, err error) {
@@ -70,6 +79,11 @@ func (p *kLepUserClient) UpsertRole(ctx context.Context, req *lep_user.UpsertRol
 	return p.kClient.UpsertRole(ctx, req)
 }
 
+func (p *kLepUserClient) DeleteRole(ctx context.Context, req *lep_user.DeleteRoleRequest, callOptions ...callopt.Option) (r *lep_user.DeleteRoleResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.DeleteRole(ctx, req)
+}
+
 func (p *kLepUserClient) UserList(ctx context.Context, req *lep_user.UserListRequest, callOptions ...callopt.Option) (r *lep_user.UserListResp, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.UserList(ctx, req)
@@ -80,6 +94,11 @@ func (p *kLepUserClient) UpsertUser(ctx context.Context, req *lep_user.UpsertUse
 	return p.kClient.UpsertUser(ctx, req)
 }
 
+func (p *kLepUserClient) DeleteUser(ctx context.Context, req *lep_user.DeleteUserRequest, callOptions ...callopt.Option) (r *lep_user.DeleteUserResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.DeleteUser(ctx, req)
+}
+
 func (p *kLepUserClient) MaterialList(ctx context.Context, req *lep_user.MaterialListRequest, callOptions ...callopt.Option) (r *lep_user.MaterialListResp, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.MaterialList(ctx, req)
@@ -88,4 +107,9 @@ func (p *kLepUserClient) MaterialList(ctx context.Context, req *lep_user.Materia
 func (p *kLepUserClient) UpsertMaterial(ctx context.Context, req *lep_user.UpsertMaterialRequest, callOptions ...callopt.Option) (r *lep_user.UpsertMaterialResp, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.UpsertMaterial(ctx, req)
+}
+
+func (p *kLepUserClient) DeleteMaterial(ctx context.Context, req *lep_user.DeleteMaterialRequest, callOptions ...callopt.Option) (r *lep_user.DeleteMaterialResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.DeleteMaterial(ctx, req)
 }

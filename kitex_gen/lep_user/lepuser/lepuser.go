@@ -27,6 +27,13 @@ var serviceMethods = map[string]kitex.MethodInfo{
 		false,
 		kitex.WithStreamingMode(kitex.StreamingNone),
 	),
+	"DeletePermission": kitex.NewMethodInfo(
+		deletePermissionHandler,
+		newLepUserDeletePermissionArgs,
+		newLepUserDeletePermissionResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingNone),
+	),
 	"RoleList": kitex.NewMethodInfo(
 		roleListHandler,
 		newLepUserRoleListArgs,
@@ -38,6 +45,13 @@ var serviceMethods = map[string]kitex.MethodInfo{
 		upsertRoleHandler,
 		newLepUserUpsertRoleArgs,
 		newLepUserUpsertRoleResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingNone),
+	),
+	"DeleteRole": kitex.NewMethodInfo(
+		deleteRoleHandler,
+		newLepUserDeleteRoleArgs,
+		newLepUserDeleteRoleResult,
 		false,
 		kitex.WithStreamingMode(kitex.StreamingNone),
 	),
@@ -55,6 +69,13 @@ var serviceMethods = map[string]kitex.MethodInfo{
 		false,
 		kitex.WithStreamingMode(kitex.StreamingNone),
 	),
+	"DeleteUser": kitex.NewMethodInfo(
+		deleteUserHandler,
+		newLepUserDeleteUserArgs,
+		newLepUserDeleteUserResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingNone),
+	),
 	"MaterialList": kitex.NewMethodInfo(
 		materialListHandler,
 		newLepUserMaterialListArgs,
@@ -66,6 +87,13 @@ var serviceMethods = map[string]kitex.MethodInfo{
 		upsertMaterialHandler,
 		newLepUserUpsertMaterialArgs,
 		newLepUserUpsertMaterialResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingNone),
+	),
+	"DeleteMaterial": kitex.NewMethodInfo(
+		deleteMaterialHandler,
+		newLepUserDeleteMaterialArgs,
+		newLepUserDeleteMaterialResult,
 		false,
 		kitex.WithStreamingMode(kitex.StreamingNone),
 	),
@@ -171,6 +199,24 @@ func newLepUserUpsertPermissionResult() interface{} {
 	return lep_user.NewLepUserUpsertPermissionResult()
 }
 
+func deletePermissionHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*lep_user.LepUserDeletePermissionArgs)
+	realResult := result.(*lep_user.LepUserDeletePermissionResult)
+	success, err := handler.(lep_user.LepUser).DeletePermission(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newLepUserDeletePermissionArgs() interface{} {
+	return lep_user.NewLepUserDeletePermissionArgs()
+}
+
+func newLepUserDeletePermissionResult() interface{} {
+	return lep_user.NewLepUserDeletePermissionResult()
+}
+
 func roleListHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
 	realArg := arg.(*lep_user.LepUserRoleListArgs)
 	realResult := result.(*lep_user.LepUserRoleListResult)
@@ -205,6 +251,24 @@ func newLepUserUpsertRoleArgs() interface{} {
 
 func newLepUserUpsertRoleResult() interface{} {
 	return lep_user.NewLepUserUpsertRoleResult()
+}
+
+func deleteRoleHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*lep_user.LepUserDeleteRoleArgs)
+	realResult := result.(*lep_user.LepUserDeleteRoleResult)
+	success, err := handler.(lep_user.LepUser).DeleteRole(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newLepUserDeleteRoleArgs() interface{} {
+	return lep_user.NewLepUserDeleteRoleArgs()
+}
+
+func newLepUserDeleteRoleResult() interface{} {
+	return lep_user.NewLepUserDeleteRoleResult()
 }
 
 func userListHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
@@ -243,6 +307,24 @@ func newLepUserUpsertUserResult() interface{} {
 	return lep_user.NewLepUserUpsertUserResult()
 }
 
+func deleteUserHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*lep_user.LepUserDeleteUserArgs)
+	realResult := result.(*lep_user.LepUserDeleteUserResult)
+	success, err := handler.(lep_user.LepUser).DeleteUser(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newLepUserDeleteUserArgs() interface{} {
+	return lep_user.NewLepUserDeleteUserArgs()
+}
+
+func newLepUserDeleteUserResult() interface{} {
+	return lep_user.NewLepUserDeleteUserResult()
+}
+
 func materialListHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
 	realArg := arg.(*lep_user.LepUserMaterialListArgs)
 	realResult := result.(*lep_user.LepUserMaterialListResult)
@@ -279,6 +361,24 @@ func newLepUserUpsertMaterialResult() interface{} {
 	return lep_user.NewLepUserUpsertMaterialResult()
 }
 
+func deleteMaterialHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*lep_user.LepUserDeleteMaterialArgs)
+	realResult := result.(*lep_user.LepUserDeleteMaterialResult)
+	success, err := handler.(lep_user.LepUser).DeleteMaterial(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newLepUserDeleteMaterialArgs() interface{} {
+	return lep_user.NewLepUserDeleteMaterialArgs()
+}
+
+func newLepUserDeleteMaterialResult() interface{} {
+	return lep_user.NewLepUserDeleteMaterialResult()
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -299,11 +399,21 @@ func (p *kClient) PermissionList(ctx context.Context, req *lep_user.PermissionLi
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) UpsertPermission(ctx context.Context, req *lep_user.UpsertMaterialRequest) (r *lep_user.UpsertPermissionResp, err error) {
+func (p *kClient) UpsertPermission(ctx context.Context, req *lep_user.UpsertPermissionRequest) (r *lep_user.UpsertPermissionResp, err error) {
 	var _args lep_user.LepUserUpsertPermissionArgs
 	_args.Req = req
 	var _result lep_user.LepUserUpsertPermissionResult
 	if err = p.c.Call(ctx, "UpsertPermission", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) DeletePermission(ctx context.Context, req *lep_user.DeletePermissionRequest) (r *lep_user.DeletePermissionResp, err error) {
+	var _args lep_user.LepUserDeletePermissionArgs
+	_args.Req = req
+	var _result lep_user.LepUserDeletePermissionResult
+	if err = p.c.Call(ctx, "DeletePermission", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
@@ -329,6 +439,16 @@ func (p *kClient) UpsertRole(ctx context.Context, req *lep_user.UpsertRoleReques
 	return _result.GetSuccess(), nil
 }
 
+func (p *kClient) DeleteRole(ctx context.Context, req *lep_user.DeleteRoleRequest) (r *lep_user.DeleteRoleResp, err error) {
+	var _args lep_user.LepUserDeleteRoleArgs
+	_args.Req = req
+	var _result lep_user.LepUserDeleteRoleResult
+	if err = p.c.Call(ctx, "DeleteRole", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
 func (p *kClient) UserList(ctx context.Context, req *lep_user.UserListRequest) (r *lep_user.UserListResp, err error) {
 	var _args lep_user.LepUserUserListArgs
 	_args.Req = req
@@ -349,6 +469,16 @@ func (p *kClient) UpsertUser(ctx context.Context, req *lep_user.UpsertUserReques
 	return _result.GetSuccess(), nil
 }
 
+func (p *kClient) DeleteUser(ctx context.Context, req *lep_user.DeleteUserRequest) (r *lep_user.DeleteUserResp, err error) {
+	var _args lep_user.LepUserDeleteUserArgs
+	_args.Req = req
+	var _result lep_user.LepUserDeleteUserResult
+	if err = p.c.Call(ctx, "DeleteUser", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
 func (p *kClient) MaterialList(ctx context.Context, req *lep_user.MaterialListRequest) (r *lep_user.MaterialListResp, err error) {
 	var _args lep_user.LepUserMaterialListArgs
 	_args.Req = req
@@ -364,6 +494,16 @@ func (p *kClient) UpsertMaterial(ctx context.Context, req *lep_user.UpsertMateri
 	_args.Req = req
 	var _result lep_user.LepUserUpsertMaterialResult
 	if err = p.c.Call(ctx, "UpsertMaterial", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) DeleteMaterial(ctx context.Context, req *lep_user.DeleteMaterialRequest) (r *lep_user.DeleteMaterialResp, err error) {
+	var _args lep_user.LepUserDeleteMaterialArgs
+	_args.Req = req
+	var _result lep_user.LepUserDeleteMaterialResult
+	if err = p.c.Call(ctx, "DeleteMaterial", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

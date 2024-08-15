@@ -49,10 +49,10 @@ func (h *ListHandler) buildCondition() map[string]interface{} {
 	condition := make(map[string]interface{}, 0)
 	req := h.req
 	if req.PermissionKey != nil {
-		condition["permission_key"] = *req.PermissionKey
+		condition["permission_key = ?"] = *req.PermissionKey
 	}
 	if req.PermissionName != nil {
-		condition["permission_name"] = *req.PermissionName
+		condition["permission_name = ?"] = *req.PermissionName
 	}
 	return condition
 }

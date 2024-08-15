@@ -5,7 +5,7 @@ go 1.21.0
 require (
 	github.com/apache/thrift v0.20.0
 	github.com/cloudwego/kitex v0.10.3
-	github.com/zhongershashen/lep_lib v0.0.0-20240814072557-4edaa52a36ff
+	github.com/zhongershashen/lep_lib v0.0.0-20240815030356-23ec3d44c3e9
 	gorm.io/gorm v1.25.11
 )
 
@@ -47,9 +47,9 @@ require (
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	golang.org/x/arch v0.2.0 // indirect
 	golang.org/x/net v0.17.0 // indirect
-	golang.org/x/sync v0.1.0 // indirect
-	golang.org/x/sys v0.13.0 // indirect
-	golang.org/x/text v0.14.0 // indirect
+	golang.org/x/sync v0.7.0 // indirect
+	golang.org/x/sys v0.21.0 // indirect
+	golang.org/x/text v0.16.0 // indirect
 	google.golang.org/genproto v0.0.0-20210513213006-bf773b8c8384 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect

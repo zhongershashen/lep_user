@@ -23,9 +23,6 @@ func NewUpsertHandler(ctx context.Context, req *lep_user.UpsertPermissionRequest
 }
 func (h *UpsertHandler) UpsertPermission() (int64, error) {
 	db := dal.GetDB()
-	if h.req.Permission == nil {
-		return 0, errors.New("invalid permission")
-	}
 	permission := h.req.Permission
 	modelItem := &model.LepPermissionTable{
 		PermissionName: permission.GetPermissionName(),

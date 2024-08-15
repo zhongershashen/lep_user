@@ -1,62 +1,55 @@
-package role
+package user
 
 import (
 	"bupt/lep_user/biz/dal/mysql"
 	"bupt/lep_user/kitex_gen/lep_user"
 	"context"
 
-	"gorm.io/gorm"
-
 	"github.com/zhongershashen/lep_lib/dal"
+	"gorm.io/gorm"
 )
 
 type ListHandler struct {
 	ctx           context.Context
-	req           *lep_user.RoleListRequest
+	req           *lep_user.UserListRequest
 	tx            *gorm.DB
 	roleKeyList   []string
 	permissionMap map[string][]*lep_user.Permission
 }
 
-func NewRoleListHandler(ctx context.Context, req *lep_user.RoleListRequest) *ListHandler {
+func NewUserListHandler(ctx context.Context, req *lep_user.UserListRequest) *ListHandler {
 	return &ListHandler{
 		ctx: ctx,
 		req: req,
 	}
 }
-func (h *ListHandler) GetRoleList() ([]*lep_user.Role, int64, error) {
-	var err error
-	list := make([]*lep_user.Role, 0)
+func (h *ListHandler) GetUserList() ([]*lep_user.User, int64, error) {
+	list := make([]*lep_user.User, 0)
 	h.roleKeyList = make([]string, 0)
 	h.tx = dal.GetDB().Begin()
-	defer func() {
-		if err != nil {
-			h.tx.Rollback()
-		} else {
-			h.tx.Commit()
-		}
-	}()
 	condition := h.buildCondition()
-	total, err := mysql.CountRole(h.ctx, h.tx, condition)
+	total, err := mysql.CountUser(h.ctx, h.tx, condition)
 	if err != nil {
 		return nil, 0, err
 	}
 	if total == 0 {
 		return list, 0, nil
 	}
-	modelList, err := mysql.QueryRole(h.ctx, h.tx, condition, int(h.req.Offset), int(h.req.Limit))
+	modelList, err := mysql.QueryUser(h.ctx, h.tx, condition, int(h.req.Offset), int(h.req.Limit))
 	for _, item := range modelList {
-		tempRole := &lep_user.Role{
+		tempUser := &lep_user.User{
 			Id:          &item.ID,
-			RoleName:    item.RoleName,
+			UserName:    item.UserName,
+			UserAvatar:  item.UserAvatar,
 			RoleKey:     item.RoleKey,
-			RoleDesc:    item.RoleDesc,
 			Extra:       item.Extra,
 			CreatedTime: item.CreatedTime.Unix(),
 			UpdatedTime: item.UpdatedTime.Unix(),
+			Phone:       item.Phone,
+			RoleName:    item.RoleName,
 		}
-		list = append(list, tempRole)
-		h.roleKeyList = append(h.roleKeyList, tempRole.RoleKey)
+		list = append(list, tempUser)
+		h.roleKeyList = append(h.roleKeyList, item.RoleKey)
 	}
 	err = h.loadRolePermission()
 	if err != nil {
@@ -73,10 +66,13 @@ func (h *ListHandler) buildCondition() map[string]interface{} {
 	condition := make(map[string]interface{}, 0)
 	req := h.req
 	if req.RoleKey != nil {
-		condition["role_key = ? "] = *req.RoleKey
+		condition["role_key = ?"] = *req.RoleKey
 	}
-	if req.RoleName != nil {
-		condition["role_name = ?"] = *req.RoleName
+	if req.UserId != nil {
+		condition["id = ?"] = *req.UserId
+	}
+	if req.Phone != nil {
+		condition["phone = ?"] = *req.Phone
 	}
 	return condition
 }
