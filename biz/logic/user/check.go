@@ -4,7 +4,6 @@ import (
 	"bupt/lep_user/biz/dal/mysql"
 	"bupt/lep_user/kitex_gen/lep_user"
 	"context"
-	"errors"
 
 	"github.com/zhongershashen/lep_lib/dal"
 )
@@ -27,13 +26,14 @@ func (h *CheckHandler) CheckUser() (int64, error) {
 		return 0, err
 	}
 	req := h.req
-	if req.Phone == "" || req.UserName == "" || req.Password == "" {
-		return 0, errors.New("invalid params")
-	}
 	condition := make(map[string]interface{}, 0)
-	condition["pass_word = ?"] = req.Password
-	condition["user_name = ?"] = req.UserName
-	condition["phone = ?"] = req.Phone
+	if req.Password != "" && req.UserName != "" {
+		condition["pass_word = ?"] = req.Password
+		condition["user_name = ?"] = req.UserName
+	}
+	if req.Phone != "" {
+		condition["phone = ?"] = req.Phone
+	}
 	modelList, err := mysql.QueryUser(h.ctx, db, condition, 0, 1)
 	if err != nil {
 		return 0, err

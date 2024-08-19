@@ -4169,7 +4169,7 @@ func (p *User) Field11DeepEqual(src string) bool {
 type UserListRequest struct {
 	Offset  int64   `thrift:"offset,1,required" frugal:"1,required,i64" json:"offset"`
 	Limit   int64   `thrift:"limit,2,required" frugal:"2,required,i64" json:"limit"`
-	UserId  *string `thrift:"user_id,3,optional" frugal:"3,optional,string" json:"user_id,omitempty"`
+	UserId  *int64  `thrift:"user_id,3,optional" frugal:"3,optional,i64" json:"user_id,omitempty"`
 	RoleKey *string `thrift:"role_key,4,optional" frugal:"4,optional,string" json:"role_key,omitempty"`
 	Phone   *string `thrift:"phone,5,optional" frugal:"5,optional,string" json:"phone,omitempty"`
 }
@@ -4189,9 +4189,9 @@ func (p *UserListRequest) GetLimit() (v int64) {
 	return p.Limit
 }
 
-var UserListRequest_UserId_DEFAULT string
+var UserListRequest_UserId_DEFAULT int64
 
-func (p *UserListRequest) GetUserId() (v string) {
+func (p *UserListRequest) GetUserId() (v int64) {
 	if !p.IsSetUserId() {
 		return UserListRequest_UserId_DEFAULT
 	}
@@ -4221,7 +4221,7 @@ func (p *UserListRequest) SetOffset(val int64) {
 func (p *UserListRequest) SetLimit(val int64) {
 	p.Limit = val
 }
-func (p *UserListRequest) SetUserId(val *string) {
+func (p *UserListRequest) SetUserId(val *int64) {
 	p.UserId = val
 }
 func (p *UserListRequest) SetRoleKey(val *string) {
@@ -4291,7 +4291,7 @@ func (p *UserListRequest) Read(iprot thrift.TProtocol) (err error) {
 				goto SkipFieldError
 			}
 		case 3:
-			if fieldTypeId == thrift.STRING {
+			if fieldTypeId == thrift.I64 {
 				if err = p.ReadField3(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -4378,8 +4378,8 @@ func (p *UserListRequest) ReadField2(iprot thrift.TProtocol) error {
 }
 func (p *UserListRequest) ReadField3(iprot thrift.TProtocol) error {
 
-	var _field *string
-	if v, err := iprot.ReadString(); err != nil {
+	var _field *int64
+	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
 		_field = &v
@@ -4490,10 +4490,10 @@ WriteFieldEndError:
 
 func (p *UserListRequest) writeField3(oprot thrift.TProtocol) (err error) {
 	if p.IsSetUserId() {
-		if err = oprot.WriteFieldBegin("user_id", thrift.STRING, 3); err != nil {
+		if err = oprot.WriteFieldBegin("user_id", thrift.I64, 3); err != nil {
 			goto WriteFieldBeginError
 		}
-		if err := oprot.WriteString(*p.UserId); err != nil {
+		if err := oprot.WriteI64(*p.UserId); err != nil {
 			return err
 		}
 		if err = oprot.WriteFieldEnd(); err != nil {
@@ -4591,14 +4591,14 @@ func (p *UserListRequest) Field2DeepEqual(src int64) bool {
 	}
 	return true
 }
-func (p *UserListRequest) Field3DeepEqual(src *string) bool {
+func (p *UserListRequest) Field3DeepEqual(src *int64) bool {
 
 	if p.UserId == src {
 		return true
 	} else if p.UserId == nil || src == nil {
 		return false
 	}
-	if strings.Compare(*p.UserId, *src) != 0 {
+	if *p.UserId != *src {
 		return false
 	}
 	return true
