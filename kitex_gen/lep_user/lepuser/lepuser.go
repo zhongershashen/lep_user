@@ -97,6 +97,13 @@ var serviceMethods = map[string]kitex.MethodInfo{
 		false,
 		kitex.WithStreamingMode(kitex.StreamingNone),
 	),
+	"CheckUser": kitex.NewMethodInfo(
+		checkUserHandler,
+		newLepUserCheckUserArgs,
+		newLepUserCheckUserResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingNone),
+	),
 }
 
 var (
@@ -379,6 +386,24 @@ func newLepUserDeleteMaterialResult() interface{} {
 	return lep_user.NewLepUserDeleteMaterialResult()
 }
 
+func checkUserHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*lep_user.LepUserCheckUserArgs)
+	realResult := result.(*lep_user.LepUserCheckUserResult)
+	success, err := handler.(lep_user.LepUser).CheckUser(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newLepUserCheckUserArgs() interface{} {
+	return lep_user.NewLepUserCheckUserArgs()
+}
+
+func newLepUserCheckUserResult() interface{} {
+	return lep_user.NewLepUserCheckUserResult()
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -504,6 +529,16 @@ func (p *kClient) DeleteMaterial(ctx context.Context, req *lep_user.DeleteMateri
 	_args.Req = req
 	var _result lep_user.LepUserDeleteMaterialResult
 	if err = p.c.Call(ctx, "DeleteMaterial", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) CheckUser(ctx context.Context, req *lep_user.CheckUserReq) (r *lep_user.CheckUserResp, err error) {
+	var _args lep_user.LepUserCheckUserArgs
+	_args.Req = req
+	var _result lep_user.LepUserCheckUserResult
+	if err = p.c.Call(ctx, "CheckUser", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

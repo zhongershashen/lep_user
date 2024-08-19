@@ -80,3 +80,9 @@ func (s *LepUserImpl) DeleteMaterial(ctx context.Context, req *lep_user.DeleteMa
 	resp, err = handler.DeleteMaterial(ctx, req)
 	return
 }
+
+// CheckUser implements the LepUserImpl interface.
+func (s *LepUserImpl) CheckUser(ctx context.Context, req *lep_user.CheckUserReq) (resp *lep_user.CheckUserResp, err error) {
+	resp, err = handler.CheckUser(ctx, req)
+	return
+}

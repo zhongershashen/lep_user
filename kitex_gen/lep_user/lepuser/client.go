@@ -23,6 +23,7 @@ type Client interface {
 	MaterialList(ctx context.Context, req *lep_user.MaterialListRequest, callOptions ...callopt.Option) (r *lep_user.MaterialListResp, err error)
 	UpsertMaterial(ctx context.Context, req *lep_user.UpsertMaterialRequest, callOptions ...callopt.Option) (r *lep_user.UpsertMaterialResp, err error)
 	DeleteMaterial(ctx context.Context, req *lep_user.DeleteMaterialRequest, callOptions ...callopt.Option) (r *lep_user.DeleteMaterialResp, err error)
+	CheckUser(ctx context.Context, req *lep_user.CheckUserReq, callOptions ...callopt.Option) (r *lep_user.CheckUserResp, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -112,4 +113,9 @@ func (p *kLepUserClient) UpsertMaterial(ctx context.Context, req *lep_user.Upser
 func (p *kLepUserClient) DeleteMaterial(ctx context.Context, req *lep_user.DeleteMaterialRequest, callOptions ...callopt.Option) (r *lep_user.DeleteMaterialResp, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.DeleteMaterial(ctx, req)
+}
+
+func (p *kLepUserClient) CheckUser(ctx context.Context, req *lep_user.CheckUserReq, callOptions ...callopt.Option) (r *lep_user.CheckUserResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.CheckUser(ctx, req)
 }

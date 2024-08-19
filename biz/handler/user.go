@@ -34,7 +34,16 @@ func UpsertUser(ctx context.Context, req *lep_user.UpsertUserRequest) (*lep_user
 	resp.UserId = id
 	return resp, err
 }
-
+func CheckUser(ctx context.Context, req *lep_user.CheckUserReq) (*lep_user.CheckUserResp, error) {
+	resp := new(lep_user.CheckUserResp)
+	resp.BaseResp = base.NewBaseResp()
+	id, err := user.NewCheckHandler(ctx, req).CheckUser()
+	if err != nil {
+		return nil, err
+	}
+	resp.UserId = &id
+	return resp, err
+}
 func DeleteUser(ctx context.Context, req *lep_user.DeleteUserRequest) (*lep_user.DeleteUserResp, error) {
 	resp := new(lep_user.DeleteUserResp)
 	resp.BaseResp = base.NewBaseResp()
